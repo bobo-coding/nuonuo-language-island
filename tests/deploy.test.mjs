@@ -10,7 +10,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 function fixture(t){
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'nuonuo-deploy-test-'));
   t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
-  for(const name of ['dist','scripts'])fs.cpSync(path.join(root,name),path.join(dir,name),{recursive:true});
+  for(const name of ['dist','scripts','tests/fixtures'])fs.cpSync(path.join(root,name),path.join(dir,name),{recursive:true});
   const cli=path.join(dir,'node_modules/.bin/edgeone');fs.mkdirSync(path.dirname(cli),{recursive:true});
   fs.writeFileSync(cli,`#!/usr/bin/env node
 const fs=require('node:fs'),path=require('node:path');
@@ -37,7 +37,7 @@ test('CI deploys only static assets with an environment-only token and overseas 
   const call=JSON.parse(fs.readFileSync(f.log,'utf8'));
   assert.equal(call.token,token);assert.equal(call.region,'china');assert(!call.args.includes(token));
   assert.deepEqual(call.args.slice(3),['-n','nuonuo-language-island','-e','production','--area','overseas','--skip-ai-gateway-sync']);
-  assert.equal(call.files.length,12);assert(call.files.includes('assets/bank.js'));assert(call.files.includes('library.html'));
+  assert.equal(call.files.length,15);assert(call.files.includes('assets/bank.js'));assert(call.files.includes('library.html'));assert(call.files.includes('curriculum.html'));assert(call.files.includes('assets/curriculum-data.js'));assert(call.files.includes('assets/curriculum.js'));
   assert(!call.files.some(f=>f.endsWith('.pdf')||f.includes('.env')||f.includes('.git')));
   assert(!result.stdout.includes(token));assert(!fs.existsSync(call.directory));
 });

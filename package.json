@@ -1,12 +1,14 @@
 {
   "name": "nuonuo-language-island",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
-  "description": "四年级语文趣味训练：四周80关与192个专项活动",
+  "description": "四上全册课程与针对性语文训练：685个活动、八单元、全册字词与习作",
   "type": "module",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
-    "check": "node scripts/check.mjs && node --check dist/assets/data.js && node --check dist/assets/bank.js && node --check dist/assets/app.js && bash -n scripts/deploy-edgeone.sh",
+    "check": "node scripts/check.mjs && node --check dist/assets/data.js && node --check dist/assets/bank.js && node --check dist/assets/curriculum-data.js && node --check dist/assets/curriculum.js && node --check dist/assets/app.js && bash -n scripts/deploy-edgeone.sh",
     "test": "node --test tests/*.test.cjs tests/*.test.mjs",
     "deploy": "bash scripts/deploy-edgeone.sh --publish",
     "deploy:check": "bash scripts/deploy-edgeone.sh"

@@ -12,7 +12,7 @@ const output=path.resolve(outputArg);
 if(output===source||output.startsWith(source+path.sep)||source.startsWith(output+path.sep))throw new Error('Output must be outside dist and cannot contain dist.');
 fs.mkdirSync(output,{recursive:true});
 if(fs.lstatSync(output).isSymbolicLink()||fs.readdirSync(output).length)throw new Error('Output must be an empty, real directory.');
-const roots=new Set(['index.html','navigation.html','plan.html','train.html','journal.html','library.html','parents.html']);
+const roots=new Set(['index.html','navigation.html','plan.html','train.html','journal.html','library.html','parents.html','curriculum.html']);
 const extensions=new Set(['.js','.css','.svg','.png','.jpg','.jpeg','.webp','.ico','.woff','.woff2']);
 let count=0,bytes=0;
 function walk(dir){
