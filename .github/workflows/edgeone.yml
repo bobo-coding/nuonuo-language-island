@@ -38,9 +38,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
-      EDGEONE_PROJECT_NAME: ${{ vars.EDGEONE_PROJECT_NAME || 'nuonuo-language-island' }}
+      EDGEONE_PROJECT_NAME: ${{ vars.EDGEONE_PROJECT_NAME || 'nuonuo-language-island-cn' }}
       EDGEONE_SITE: ${{ vars.EDGEONE_SITE || 'china' }}
-      EDGEONE_AREA: ${{ vars.EDGEONE_AREA || 'overseas' }}
+      EDGEONE_AREA: ${{ vars.EDGEONE_AREA || 'global' }}
     steps:
       - name: Check deployment credential
         id: credential
@@ -75,3 +75,8 @@ jobs:
           EDGEONE_API_TOKEN: ${{ secrets.EDGEONE_API_TOKEN }}
           EDGEONE_ENV: production
         run: npm run deploy
+      - name: Verify actual project acceleration area
+        if: steps.credential.outputs.configured == 'true'
+        env:
+          EDGEONE_API_TOKEN: ${{ secrets.EDGEONE_API_TOKEN }}
+        run: npm run deploy:verify

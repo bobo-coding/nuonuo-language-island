@@ -2,27 +2,28 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PROJECT="${EDGEONE_PROJECT_NAME:-nuonuo-language-island}"
+PROJECT="${EDGEONE_PROJECT_NAME:-nuonuo-language-island-cn}"
 TARGET_ENV="${EDGEONE_ENV:-production}"
 ACCOUNT_SITE="${EDGEONE_SITE:-china}"
-ACCELERATION_AREA="${EDGEONE_AREA:-overseas}"
+ACCELERATION_AREA="${EDGEONE_AREA:-global}"
 MODE="dry-run"
 
 usage() {
   cat <<'HELP'
 用法：bash scripts/deploy-edgeone.sh [选项]
 
-  --project NAME       EdgeOne 项目名（默认 nuonuo-language-island）
+  --project NAME       EdgeOne 项目名（默认 nuonuo-language-island-cn）
   --env production|preview  部署环境（默认 production）
   --site china|global  腾讯云账号站点（默认 china）
-  --area overseas|global 加速区域（默认overseas，不含中国大陆）
+  --area global|overseas 创建区域（默认global，含中国大陆）
   --dry-run            本地检查，打印部署方案，不上传（默认）
   --publish            使用已登录的官方 EdgeOne CLI 实际上传
   -h, --help           显示说明
 
 首次使用：npm ci，然后 npx --no-install edgeone login，选择 China。
-控制台中选择免费版和“直接上传”项目。未备案域名请选择
-“全球可用区（不含中国大陆）”，并绑定自定义域名和 HTTPS。
+默认使用新的“直接上传”项目，区域为“全球可用区（含中国大陆）”。
+该区域的自定义域名需完成 ICP 备案，并配置 CNAME 和 HTTPS。
+注意：--area 仅在创建项目时生效，不会改变已有项目的加速区域。
 HELP
 }
 die(){ printf '%s\n' "错误：$*" >&2; exit 1; }

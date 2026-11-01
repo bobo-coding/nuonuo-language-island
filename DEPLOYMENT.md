@@ -4,11 +4,11 @@
 
 ## 首次设置
 
-1. 在[腾讯云EdgeOne控制台](https://console.cloud.tencent.com/edgeone)开通Makers（旧名称Pages），使用免费版并创建“直接上传”项目，名称为 `nuonuo-language-island`。
+1. 在[腾讯云EdgeOne控制台](https://console.cloud.tencent.com/edgeone)开通Makers（旧名称Pages），使用免费版并创建“直接上传”项目，名称为 `nuonuo-language-island-cn`，加速区域选择 **全球可用区（含中国大陆）**。
 2. 在Makers控制台创建API Token。将其保存为本仓库的GitHub Actions Secret：**EDGEONE_API_TOKEN**。
    - [打开仓库Secrets设置](https://github.com/bobo-coding/nuonuo-language-island/settings/secrets/actions)
    - Token由你在控制台创建并直接填入GitHub，不提交进代码或发到聊天中。
-3. 项目名不是上述名称时，在GitHub Actions Variables中增加 `EDGEONE_PROJECT_NAME`。使用国际站账号时增加 `EDGEONE_SITE=global`；国内站默认 `china`，无需额外配置。加速区域默认 `overseas`（不含中国大陆）。
+3. 项目名不是上述名称时，在GitHub Actions Variables中增加 `EDGEONE_PROJECT_NAME`。使用国际站账号时增加 `EDGEONE_SITE=global`；国内站默认 `china`，无需额外配置。加速区域默认 `global`（含中国大陆），自定义域名需完成 ICP 备案。
 4. 在[Actions页面](https://github.com/bobo-coding/nuonuo-language-island/actions)打开 **Check and deploy to EdgeOne Makers**，选择 **Run workflow**，分支选main。
 
 没有配置Token时，检查仍运行，部署步骤会明确跳过，并在运行摘要中提示配置；这不代表网站已经上线。配置后无需修改代码，手动重跑工作流即可。
@@ -17,13 +17,19 @@
 
 ## 域名与加速区域
 
-目前使用场景是主要在大陆访问、域名未备案。先在Makers项目控制台选择 **全球可用区（不含中国大陆）**，再绑定自己的子域名并按实际提供的CNAME配置DNS及HTTPS。脚本里的 `china` 指账号站点，加速节点由 `overseas` 指定；未备案时保持该默认值。
+当前默认使用 **全球可用区（含中国大陆）**，由大陆及其他地区节点提供服务。`EDGEONE_SITE=china` 表示账号站点；`EDGEONE_AREA=global` 表示项目加速区域，两者含义不同。
 
-腾讯云国内站的默认项目/部署域名有访问限制：含大陆区域使用有时效的预览链接，不含大陆区域的默认域名对大陆网络可能返回401。因此长期使用要绑定自定义域名，并用实际访问网络验收。
+2026-11-01 从原 `nuonuo-language-island`（overseas）迁移到 `nuonuo-language-island-cn`（global）。锁定的官方 CLI 仅支持 global / overseas，且 `--area` 仅在创建项目时生效。因此使用新的项目名创建含大陆区域项目，保留原项目以便回退。不要把项目名改回旧项目后误以为 `--area global` 会改变旧项目区域。
+
+迁移使用同一份 dist 静态文件，题库与学习记录格式保持一致。若已有自定义域名绑定旧项目，需在完成 ICP 备案后将该域名迁移到新项目，并按新项目给出的 CNAME 与证书配置接入。仅更改仓库部署参数不会自动迁移域名或修改 DNS。域名未备案时，含大陆区域的正式域名接入仍受备案要求限制。
+
+平台项目/部署域名主要用于预览，对大陆访问有时效或访问规则限制；长期使用请绑定已备案的自定义域名，并从实际使用网络验收。
+
+自动部署完成后，工作流通过与锁定 CLI 相同的官方 API 读取实际项目区域；若仍为 overseas 或无法核实，工作流会失败，避免将“上传成功”误报为“区域切换成功”。
 
 ## 自动化范围
 
-- main的push：检查通过后发布production。
+- main的push：检查通过后发布production，并核对线上项目实际加速区域。
 - PR：仅检查，不提供部署Token、不发布。
 - 手动运行：main分支执行生产部署；其他分支仅检查。
 - CLI、测试依赖和Actions提交均固定版本；npm ci使用锁文件。
@@ -43,7 +49,7 @@ npm run deploy:check
 
 手动部署可先执行 `npx --no-install edgeone login` 并选择China，然后执行 `npm run deploy`。自动化使用环境变量EDGEONE_API_TOKEN，无需浏览器登录。不要在命令文本中直接粘贴Token。
 
-可选环境变量：`EDGEONE_PROJECT_NAME`、`EDGEONE_SITE`（china/global）、`EDGEONE_ENV`（production/preview）、`EDGEONE_AREA`（overseas/global，默认overseas）。预览首次部署如需生产环境，先执行一次production；自动工作流固定发布production。
+可选环境变量：`EDGEONE_PROJECT_NAME`、`EDGEONE_SITE`（china/global）、`EDGEONE_ENV`（production/preview）、`EDGEONE_AREA`（global/overseas，默认global，含中国大陆）。预览首次部署如需生产环境，先执行一次production；自动工作流固定发布production。
 
 ## 更新与验收
 

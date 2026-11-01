@@ -50,7 +50,7 @@ main更新后，GitHub Actions检查通过即部署到EdgeOne Makers；PR只执�
 EDGEONE_API_TOKEN
 ```
 
-默认项目名nuonuo-language-island，账号站点china；可用Actions Variables覆盖。Token未配置时，工作流明确跳过发布并提示设置，不会进行匿名部署。完整步骤见[部署文档](DEPLOYMENT.md)。
+默认项目名nuonuo-language-island-cn，账号站点china，加速区域global（含中国大陆）；可用Actions Variables覆盖。自定义域名需完成ICP备案。发布后会读取线上项目核对实际区域。Token未配置时，工作流明确跳过发布并提示设置，不会进行匿名部署。完整步骤见[部署文档](DEPLOYMENT.md)。
 
 本地检查与发布：
 

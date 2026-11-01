@@ -31,12 +31,12 @@ process.exit(Number(process.env.MOCK_FAILURE||0));
 test('dry-run performs checks but never invokes the CLI',t=>{
   const f=fixture(t),result=f.run();assert.equal(result.status,0,result.stderr);assert(!fs.existsSync(f.log));
 });
-test('CI deploys only static assets with an environment-only token and overseas area',t=>{
+test('CI deploys only static assets to the new mainland-enabled project with an environment-only token',t=>{
   const f=fixture(t),token='fake-test-token-not-a-real-credential';
   const result=f.run(['--publish'],{CI:'true',EDGEONE_API_TOKEN:token});assert.equal(result.status,0,result.stderr);
   const call=JSON.parse(fs.readFileSync(f.log,'utf8'));
   assert.equal(call.token,token);assert.equal(call.region,'china');assert(!call.args.includes(token));
-  assert.deepEqual(call.args.slice(3),['-n','nuonuo-language-island','-e','production','--area','overseas','--skip-ai-gateway-sync']);
+  assert.deepEqual(call.args.slice(3),['-n','nuonuo-language-island-cn','-e','production','--area','global','--skip-ai-gateway-sync']);
   assert.equal(call.files.length,15);assert(call.files.includes('assets/bank.js'));assert(call.files.includes('library.html'));assert(call.files.includes('curriculum.html'));assert(call.files.includes('assets/curriculum-data.js'));assert(call.files.includes('assets/curriculum.js'));
   assert(!call.files.some(f=>f.endsWith('.pdf')||f.includes('.env')||f.includes('.git')));
   assert(!result.stdout.includes(token));assert(!fs.existsSync(call.directory));
